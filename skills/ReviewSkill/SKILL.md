@@ -1,7 +1,7 @@
 ---
 name: codeSkill
 inclusion: always
-description: 当你在阅读dart代码时使用此skill。
+description: 当你在阅读和优化dart/flutter代码时使用此skill。
 ---
 <!------------------------------------------------------------------------------------
    Add rules to this file or a short description that will apply across all your workspaces.
@@ -46,6 +46,8 @@ description: 当你在阅读dart代码时使用此skill。
    正确的写法是：复用成员变量，使用一个成员变量缓存，在动画开始时候进行初始化，动画结束的时候销毁至空，动画期间复用该字符串
 
 2. Opacity在0和1.0的情况下，也会有开销。对于动画写法，最佳的方案是使用AnimatedBuilder，在没有动画的时候去掉Opacity/Transform相关的包裹，使得Widget的层级变少
+
+3. Widget深度越小越好。但并不是每一个 Widget 都会影响性能，只有创建 layer 的 Widget 才会影响性能。比如 transform/ClipRect/ClipRRect/Opacity/fade/scale/ 
    
 
 
