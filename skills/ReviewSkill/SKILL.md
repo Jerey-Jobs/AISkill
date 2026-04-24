@@ -1,5 +1,5 @@
 ---
-name: codeSkill
+name: ReviewSkill
 inclusion: always
 description: 当你在阅读和优化dart/flutter代码时使用此skill。
 ---

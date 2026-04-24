@@ -1,0 +1,25 @@
+# AISkill
+
+Claude Code 的自定义 skills 仓库。这里**不是一个运行时工程**——没有构建、没有测试、没有依赖。所有内容都是 Markdown + YAML frontmatter，由 Claude Code 在用户调用 `/<skill-name>` 时加载。
+
+## 目录结构
+
+```
+skills/
+├── SKILL.md              # 根 skill（工作大助手），路由到各子 skill
+├── codeSkill/SKILL.md    # 代码解释/优化（Rust、Dart/Flutter 偏性能）
+├── ReviewSkill/SKILL.md  # 代码 review
+└── WriteDoc/SKILL.md     # 飞书文档编写规范
+```
+
+每个 `SKILL.md` 的 YAML frontmatter 声明 `name` / `description` / `inclusion`。`inclusion: always` 代表全局加载。
+
+## 工作流
+
+- **改 skill** = 直接编辑对应的 `SKILL.md`
+- **加新 skill** = 新建 `skills/<NewSkill>/SKILL.md`，frontmatter 填好，并在根 `skills/SKILL.md` 里加一条路由
+- **发布** = `git push origin main`（SSH 已配好，无需额外凭证）
+
+## 语言约定
+
+Skill 内容全部用**中文**编写，面向中文用户。PR 标题、commit message 也遵循这个习惯。
