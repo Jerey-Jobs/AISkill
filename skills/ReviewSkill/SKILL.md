@@ -1,14 +1,9 @@
 ---
 name: ReviewSkill
 inclusion: always
-description: 当你在阅读和优化dart/flutter代码时使用此skill。
+description: 审查和优化 Dart/Flutter 代码时使用 —— 尤其关注 Widget 重建范围、layer 开销、动画性能、const 构造、Matrix4/Opacity/Transform 热点。要求：看 flutter 源码验证假设不瞎猜；优化必须注释"为什么这么改"；改动后检查 import 与参数；性能优先于可读性但需权衡。TRIGGER：用户说"review 这段 Dart/Flutter 代码 / 优化这个 Widget / 这个动画卡顿 / 看下 build 方法 / Flutter 性能 / 分析重建 / const 优化 / 帮我看 AnimatedBuilder"。
 ---
-<!------------------------------------------------------------------------------------
-   Add rules to this file or a short description that will apply across all your workspaces.
-
-   Learn about inclusion modes: https://kiro.dev/docs/steering/#inclusion-modes
--------------------------------------------------------------------------------------> 
------------> # 代码技能指南
+# Flutter/Dart 代码审查与优化指南
 
 ### Flutter/Dart 特定说明
 - 解释 Widget 树结构和状态管理
@@ -32,7 +27,7 @@ description: 当你在阅读和优化dart/flutter代码时使用此skill。
 
 2. Opacity在0和1.0的情况下，也会有开销。对于动画写法，最佳的方案是使用AnimatedBuilder，在没有动画的时候去掉Opacity/Transform相关的包裹，使得Widget的层级变少
 
-3. Widget深度越小越好。但并不是每一个 Widget 都会影响性能，只有创建 layer 的 Widget 才会影响性能。比如 transform/ClipRect/ClipRRect/Opacity/fade/scale/ 
+3. Widget 深度越小越好。但并不是每一个 Widget 都会影响性能，只有**创建 layer 的 Widget** 才会影响渲染成本。常见会创建 layer 的：Transform/ClipRect/ClipRRect/ClipPath/Opacity/FadeTransition/ScaleTransition/BackdropFilter/ColorFiltered/ShaderMask/RepaintBoundary。审查时重点看这类 Widget 是否必要，能否合并/下推/条件性移除。
    
 
 

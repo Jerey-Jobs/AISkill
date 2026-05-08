@@ -1,13 +1,9 @@
 ---
 name: codeSkill
+description: 向用户解释代码或产出代码讲解文档时使用 —— 尤其 Rust（所有权/借用/生命周期/trait/async）和 Flutter/Dart（Widget 树/状态管理/BuildContext/Future）。强制 4 段式解释结构：概述 → 核心逻辑 → 数据流 → 依赖关系；中文输出；聚焦逻辑与意图而非逐行翻译；复杂算法用类比或图示；标注边界情况与异常处理。TRIGGER：用户说"解释这段代码 / 讲一下这个函数 / walk through / explain this code / 这段代码做什么 / 帮我看下这个实现"。
 inclusion: always
 ---
-<!------------------------------------------------------------------------------------
-   Add rules to this file or a short description that will apply across all your workspaces.
-
-   Learn about inclusion modes: https://kiro.dev/docs/steering/#inclusion-modes
--------------------------------------------------------------------------------------> 
------------> # 代码技能指南
+# 代码技能指南
 
 ## 代码解释
 
