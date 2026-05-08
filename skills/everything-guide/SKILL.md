@@ -1,6 +1,7 @@
 ---
-name: code-guide
-description: Behavioral guidelines to reduce common LLM coding mistakes. Use when writing, reviewing, or refactoring code to avoid overcomplication, make surgical changes, surface assumptions, and define verifiable success criteria.
+name: everything-guide
+description: 适用于所有任务的行为准则（不限于写代码）—— 包括改代码、写文档、画图、改配置、回答问题、多步操作等。四原则永远生效：① 编码前思考（不脑补假设、困惑就问、展示权衡、该反驳就反驳）；② 简洁优先（最少代码/最少改动/不过度抽象/不防御不可能场景）；③ 精准修改（只碰必须碰的、只清理自己造成的破坏、不顺手"改进"无关代码）；④ 目标驱动执行（定义可验证成功标准，循环验证至达成）。每一次工具调用、每一次文件编辑、每一次回答都应自检是否违反。
+inclusion: always
 ---
 
 # Karpathy Guidelines
