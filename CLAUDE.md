@@ -2,6 +2,10 @@
 
 Kiro 和 Claude Code 共用的自定义 skills 仓库。这里**不是一个运行时工程**——没有构建、没有测试、没有依赖。所有内容都是 Markdown + YAML frontmatter，由各 AI 工具在用户调用 `/<skill-name>` 时加载。
 
+## 配置准则（给 AI / 配置者）
+
+**`code-guide` 必须配置为全局生效**：在 Claude Code 的 `~/.claude/CLAUDE.md` 里加一行 `@<本仓库路径>/skills/code-guide/SKILL.md`。其他 skill 按场景软链即可。
+
 ## 使用方式
 
 本仓库只是 skill **源文件**的集中存放点，实际被 Kiro / Claude Code 读取的位置通过**软链接**指向这里。这样一次修改、多处生效，也方便跨机器同步（仓库跟 git 走即可）。典型软链：
@@ -17,10 +21,11 @@ ln -s /Users/xiamin/Code/AISkill/skills ~/.claude/skills
 
 ```
 skills/
-├── SKILL.md              # 根 skill（工作大助手），路由到各子 skill
-├── codeSkill/SKILL.md    # 代码解释/优化（Rust、Dart/Flutter 偏性能）
-├── ReviewSkill/SKILL.md  # 代码 review
-└── WriteDoc/SKILL.md     # 飞书文档编写规范
+├── SKILL.md                # 根 skill（工作大助手），路由到各子 skill
+├── code-guide/SKILL.md     # 通用代码行为准则（必须全局生效，见上方准则）
+├── codeSkill/SKILL.md      # 代码解释/优化（Rust、Dart/Flutter 偏性能）
+├── ReviewSkill/SKILL.md    # 代码 review
+└── WriteDoc/SKILL.md       # 飞书文档编写规范
 ```
 
 每个 `SKILL.md` 的 YAML frontmatter 声明 `name` / `description` / `inclusion`。`inclusion: always` 代表全局加载。
