@@ -41,6 +41,42 @@ inclusion: always
   - [ ] 每个本次才有的具体值(id、timestamp、commit hash)都压缩到案例里了?
   - [ ] 代码和脚本是贴出来的,不是指向本地文件的?
 
+### 飞书 MCP 上传本地图片踩过的坑
+
+用 `feishu-mcp-pro` 插入本地图片时,**两个条件必须同时满足**才能真上传:
+
+#### 条件 1:URL 用四斜线 `file:////`
+
+- ❌ `<image url="/home/mi/x.png"/>` — 无 scheme,`Failed to parse URL`
+- ❌ `<image url="file:///home/mi/x.png"/>` — MCP 会吞一个 `/`,变成相对路径 `home/mi/...`,`ENOENT`
+- ✅ `<image url="file:////home/mi/x.png"/>` — 四斜线,吞一个后剩下 `/home/mi/...`
+
+#### 条件 2:必须用 `doc_append`,不能用 `doc_update`
+
+这是更隐蔽的坑。实测:
+
+| 工具 | 是否触发自动上传 |
+|---|---|
+| `doc_append` | ✅ 会真上传,返回 `images_processed: N`,image block 有有效 token |
+| `doc_update insert-before / insert-after / replace` | ❌ 只插入 block 但**不上传图片**,token 永远是空字符串 |
+
+返回都是 `success: true, blocks_added: 1`,**不看 `images_processed` 字段无法区分**。
+
+#### 实战做法
+
+想把图放在文档中间某位置(比如 §1 开头)时:
+1. 用 `doc_append` 把图追加到**文档末尾**(得到有 token 的真图)
+2. 用 `doc_update insert-before` 在目标位置插入**文字引用**(比如"图见文末附录")
+3. 文末追加一节"附录:XX图",和图放一起
+
+不要指望 `doc_update` 能把图塞到任意位置,做不到。
+
+#### 识别和修复空 token 图
+
+- `doc_list_blocks` 找 `block_type == 27` 且 `image.token == ""` 的 block
+- `doc_delete_blocks_by_ids` 删掉
+- 走上面"实战做法"重新插
+
 ---
 
 ### 画图工具 · drawio MCP
