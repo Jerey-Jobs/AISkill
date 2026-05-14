@@ -77,6 +77,40 @@ inclusion: always
 - `doc_delete_blocks_by_ids` 删掉
 - 走上面"实战做法"重新插
 
+### 飞书 MCP 表格单元格里不能放格式标签
+
+markdown 表格单元格里写 `**bold**` / `<text color="...">` / `<callout>` 都会**破坏 table 解析**，整行被原样输出成字面 `| ... |` 字符串（连表格线都看得到）。
+
+✅ 正确做法：
+- 单元格内只放**纯文本 / 数字 / emoji**（✅、🔴、→ 等可以）
+- 高亮 / 加粗 / 颜色放到表格的**前置段落**或**后置 callout**
+
+```markdown
+<text color="red">**4 月降至 27 亿，达标**</text>
+
+| 时间 | 数值 |
+|---|---|
+| 4 月 | 27 亿 ✅ |
+
+<callout color="green">**最终达标**：低于友商 33.3 亿。</callout>
+```
+
+### 飞书 MCP 不支持 heading 颜色属性
+
+❌ `## 结论 {color="blue"}` → `doc_write` 直接 `Request failed with status code 400`。
+
+文档说 heading attribute `{color="..." align="..."}` 支持，实测**不可用**。避免使用，结构靠 H2/H3 层级 + callout 区分。
+
+### 飞书 MCP 写文档自检清单
+
+`doc_write` / `doc_append` 大段 markdown 之前过一遍：
+
+- [ ] 表格单元格是不是纯文本/数字/emoji？没有 `**` / `<text>` / `<callout>`？
+- [ ] 标题没有 `{color="..."}` / `{align="..."}` 属性？
+- [ ] 图片是 `file:////` 四斜线 + 用 `doc_append`（不是 `doc_update`）？
+- [ ] 高亮放在表格 **外** 的段落或 callout？
+- [ ] 写完用 `doc_read` 看一下，正文里有 `| 4 月 | 27 亿 |` 这种字面字符串就是表格炸了
+
 ---
 
 ### 画图工具 · drawio MCP
