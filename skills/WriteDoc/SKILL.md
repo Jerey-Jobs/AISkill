@@ -102,6 +102,33 @@ markdown 表格单元格里写 `**bold**` / `<text color="...">` / `<callout>` �
 
 文档说 heading attribute `{color="..." align="..."}` 支持，实测**不可用**。避免使用，结构靠 H2/H3 层级 + callout 区分。
 
+### 飞书 MCP 黄底高亮（背景色）只能后处理，不能写在 markdown 里
+
+实测：markdown 里**所有**背景色语法都不识别——`<text bg="yellow">`、`<text bgcolor>`、`<text background>`、`<text highlight>`、`<text style="background-color: yellow">`、`<text background_color>`、`<mark>`、`<highlight>`、`[bg:yellow]X[/bg:yellow]` 全部当字面文本输出。`<text>` **只支持 `color` 属性**（前景色）。
+
+✅ **正确做法 = 两步走**：
+
+1. 先 `doc_write` / `doc_append` 写**纯文本**（不带任何高亮标记）
+2. 再用 `doc_update_color_text` 后处理：
+   - 它支持 `[red bold bg:yellow]X[/red bold bg:yellow]` 方括号语法
+   - 适用 block_type 2（普通段落）+ 12（bulleted list）+ 表格内的文本块
+   - content 字段传完整块文本，目标值用括号包起来
+
+定位目标 block：`doc_list_blocks` 找 block_type==2/12 + 文本匹配。表格内值是嵌在 cell 里的 type=2 文本块，按 cell 内容匹配能找到。
+
+```bash
+# 例子：把 "27 亿" 改成红字加粗黄底
+doc_update_color_text(block_id=..., content="[red bold bg:yellow]27 亿[/red bold bg:yellow]")
+```
+
+返回 `text_element_style.background_color = 3` 即黄色。其他常用：red=1 / yellow=3 / green=4 / blue=6。
+
+### 飞书 MCP 不支持 heading 颜色属性
+
+❌ `## 结论 {color="blue"}` → `doc_write` 直接 `Request failed with status code 400`。
+
+文档说 heading attribute `{color="..." align="..."}` 支持，实测**不可用**。避免使用，结构靠 H2/H3 层级 + callout 区分。
+
 ### 飞书 MCP 写文档自检清单
 
 `doc_write` / `doc_append` 大段 markdown 之前过一遍：
@@ -109,7 +136,7 @@ markdown 表格单元格里写 `**bold**` / `<text color="...">` / `<callout>` �
 - [ ] 表格单元格是不是纯文本/数字/emoji？没有 `**` / `<text>` / `<callout>`？
 - [ ] 标题没有 `{color="..."}` / `{align="..."}` 属性？
 - [ ] 图片是 `file:////` 四斜线 + 用 `doc_append`（不是 `doc_update`）？
-- [ ] 高亮放在表格 **外** 的段落或 callout？
+- [ ] 黄底高亮**没**写在 markdown 里？（需要的话先写纯文本，事后用 `doc_update_color_text` 加 `[bg:yellow]X[/bg:yellow]`）
 - [ ] 写完用 `doc_read` 看一下，正文里有 `| 4 月 | 27 亿 |` 这种字面字符串就是表格炸了
 
 ---
